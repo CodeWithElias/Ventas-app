@@ -58,8 +58,8 @@ export function AddProductDialog({ open, onOpenChange }: AddProductDialogProps) 
             description: `Código de barras detectado: ${decodedText}`,
           })
         },
-        (errorMessage) => {
-          // console.log(`Error scanning: ${errorMessage}`)
+        (_errorMessage) => {
+          // console.log(`Error scanning: ${_errorMessage}`)
         }
       )
       .catch((err) => {
