@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Plus, Search, AlertTriangle, Package } from "lucide-react"
 import { AddProductDialog } from "./add-product-dialog"
-import { Product } from "@/types"
 import { useProducts } from "@/hooks/use-products"
 import { LoadingSpinner } from "@/components/common/loading-spinner"
 import { ErrorMessage } from "@/components/common/error-message"

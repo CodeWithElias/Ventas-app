@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { BarChart3, TrendingUp, TrendingDown, DollarSign, Package, ShoppingCart, ShoppingBag } from "lucide-react"
+import { TrendingUp, TrendingDown, DollarSign, Package, ShoppingCart, ShoppingBag } from "lucide-react"
 
 export function ReportsPage() {
   return (

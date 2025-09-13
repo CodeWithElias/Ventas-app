@@ -1,6 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Package, ShoppingCart, TrendingUp, AlertTriangle } from "lucide-react"
-import { useState, useEffect } from "react"
 
 const stats = [
   {
@@ -34,35 +33,6 @@ const stats = [
 ]
 
 export function Dashboard() {
-  const [currentPage, setCurrentPage] = useState("Inicio")
-
-  // Escuchar cambios de hash para navegación
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.slice(1)
-      switch (hash) {
-        case "inventory":
-          setCurrentPage("Inventario")
-          break
-        case "purchases":
-          setCurrentPage("Compras")
-          break
-        case "sales":
-          setCurrentPage("Ventas")
-          break
-        case "reports":
-          setCurrentPage("Reportes")
-          break
-        default:
-          setCurrentPage("Inicio")
-      }
-    }
-
-    window.addEventListener("hashchange", handleHashChange)
-    handleHashChange() // Ejecutar al montar
-
-    return () => window.removeEventListener("hashchange", handleHashChange)
-  }, [])
 
   return (
     <div className="space-y-6">
