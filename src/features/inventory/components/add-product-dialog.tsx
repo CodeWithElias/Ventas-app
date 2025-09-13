@@ -1,5 +1,5 @@
 import type React from "react"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
 import { ProductFormData } from "@/types"
+import { Camera, QrCode } from "lucide-react"
+import { Html5Qrcode } from "html5-qrcode"
 
 interface AddProductDialogProps {
   open: boolean
@@ -31,8 +33,52 @@ export function AddProductDialog({ open, onOpenChange }: AddProductDialogProps) 
     minStock: 0,
     supplier: "",
     description: "",
+    barcode: "",
+    qrCode: "",
   })
+  const [scanning, setScanning] = useState(false)
   const { toast } = useToast()
+  const html5QrcodeScannerRef = useRef<Html5Qrcode | null>(null)
+
+  const startScanner = () => {
+    if (scanning) return
+    setScanning(true)
+    const config = { fps: 10, qrbox: 250 }
+    const html5QrcodeScanner = new Html5Qrcode("reader")
+    html5QrcodeScannerRef.current = html5QrcodeScanner
+    html5QrcodeScanner
+      .start(
+        { facingMode: "environment" },
+        config,
+        (decodedText) => {
+          setFormData((prev) => ({ ...prev, barcode: decodedText }))
+          stopScanner()
+          toast({
+            title: "Código escaneado",
+            description: `Código de barras detectado: ${decodedText}`,
+          })
+        },
+        (errorMessage) => {
+          // console.log(`Error scanning: ${errorMessage}`)
+        }
+      )
+      .catch((err) => {
+        toast({
+          title: "Error al iniciar el escáner",
+          description: err.message,
+          variant: "destructive",
+        })
+        setScanning(false)
+      })
+  }
+
+  const stopScanner = () => {
+    if (!scanning) return
+    html5QrcodeScannerRef.current?.stop().then(() => {
+      html5QrcodeScannerRef.current?.clear()
+      setScanning(false)
+    })
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -65,7 +111,10 @@ export function AddProductDialog({ open, onOpenChange }: AddProductDialogProps) 
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(open) => {
+      if (!open) stopScanner()
+      onOpenChange(open)
+    }}>
       <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Agregar Nuevo Producto</DialogTitle>
@@ -174,6 +223,30 @@ export function AddProductDialog({ open, onOpenChange }: AddProductDialogProps) 
               onChange={(e) => handleInputChange("description", e.target.value)}
               rows={3}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="barcode">Código de Barras</Label>
+            <div className="flex gap-2">
+              <Input
+                id="barcode"
+                value={formData.barcode}
+                onChange={(e) => handleInputChange("barcode", e.target.value)}
+                placeholder="Escanea o ingresa el código"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={scanning ? stopScanner : startScanner}
+                className="flex items-center gap-2"
+              >
+                {scanning ? <Camera className="h-4 w-4" /> : <QrCode className="h-4 w-4" />}
+                {scanning ? "Detener" : "Escanear"}
+              </Button>
+            </div>
+            {scanning && (
+              <div id="reader" className="w-full max-w-sm mx-auto border rounded-md overflow-hidden"></div>
+            )}
           </div>
 
           <DialogFooter>

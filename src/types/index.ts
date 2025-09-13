@@ -19,6 +19,8 @@ export interface Product {
   minStock: number
   supplier: string
   description?: string
+  barcode?: string
+  qrCode?: string
 }
 
 // Purchase types
@@ -71,6 +73,8 @@ export interface ProductFormData {
   minStock: number
   supplier: string
   description?: string
+  barcode?: string
+  qrCode?: string
 }
 
 // Navigation types
